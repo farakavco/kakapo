@@ -1,2 +1,5 @@
 # kakapo
-Some web development utilities
+
+Common dependencies for falcon & hawk
+
+
