@@ -29,7 +29,9 @@ class JwtBasePrincipal(object):
             s,
             cls._secret(),
             algorithms=cls._algorithm())
-        return cls(**params)
+        result = cls(**params)
+        result.validate()
+        return result
 
     def __getattr__(self, key):
         items = object.__getattribute__(self, 'items')
@@ -56,5 +58,13 @@ class JwtBasePrincipal(object):
         if c:
             return c.id
         raise ValueError('Invalid principal')
+
+    def validate(self):
+        """
+        It should be called just after the load method.
+        You can include additional criteria to validate the principal.
+        :return:
+        """
+        pass
 
 

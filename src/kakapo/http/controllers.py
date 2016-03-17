@@ -31,15 +31,6 @@ class JwtPrincipalController(BaseHandler):
             self.__principal = self.__principal_type__.load(token)
             return self.__principal
 
-        # # TODO: DELETE THESE LINES
-        # if 'HTTP_X_BYPASS_AUTH' in self.request.environ:
-        #     return self.__principal_type__(
-        #         id=1,
-        #         email='admin@falcon.com',
-        #         roles=['admin'],
-        #         role_ids=[1],
-        #         alias='admin')
-
         return None
 
     def set_principal(self, principal):
