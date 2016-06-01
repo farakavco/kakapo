@@ -53,7 +53,7 @@ class JwtBasePrincipal(object):
         return None
 
     @classmethod
-    def get_current_user_id(cls):
+    def get_current_member_id(cls):
         c = cls.current()
         if c:
             return c.id
