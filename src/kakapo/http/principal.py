@@ -67,4 +67,11 @@ class JwtBasePrincipal(object):
         """
         pass
 
+    def put_into_context(self):
+        ctx = Context.current()
+        ctx['principal'] = self
 
+    @staticmethod
+    def delete_from_context():
+        ctx = Context.current()
+        ctx.pop('principal')
