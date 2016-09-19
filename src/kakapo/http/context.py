@@ -18,7 +18,8 @@ class Context(dict):
         return _thread_local.kakapo_context
 
     def destroy(self):
-        delattr(self._thread_local, 'kakapo_context')
+        if hasattr(_thread_local, 'kakapo_context'):
+            delattr(self._thread_local, 'kakapo_context')
 
 
 class SingletonPerContext(type):
