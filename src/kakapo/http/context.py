@@ -6,7 +6,9 @@ local = threading.local()
 
 
 class Context(object):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, proxy_only=False, *args, **kwargs):
+        if proxy_only:
+            return
 
         if not hasattr(local, 'store'):
             local.store = []
@@ -15,37 +17,26 @@ class Context(object):
 
     @classmethod
     def current(cls):
-        return cls()
+        return cls(proxy_only=True)
 
     @staticmethod
     def destroy():
         if hasattr(local, 'store'):
-            local.store.pop()
-
-    def update(self, *args, **kwargs):
-        if not hasattr(local, 'store'):
-            raise ValueError('store not created yet')
-        local.store.update(*args, **kwargs)
-
-    @staticmethod
-    def get(*args, **kwargs):
-        return local.store.get(*args, **kwargs)
-
-    @staticmethod
-    def set(*args, **kwargs):
-        local.store.set(*args, **kwargs)
+            del local.store[-1]
 
     def __getitem__(self, key):
-        return local.store[key]
+        return local.store[-1][key]
 
     def __setitem__(self, key, value):
-        local.store[key] = value
+        local.store[-1][key] = value
 
     def __delitem__(self, key):
-        del local.store[key]
+        del local.store[-1][key]
 
-    def keys(self):
-        return local.store.keys()
+    def __getattr__(self, name):
+        if not hasattr(local, 'store'):
+            raise ContextNotInitializedError
+        return getattr(local.store[-1], name)
 
 
 class SingletonPerContext(type):
@@ -59,5 +50,5 @@ class SingletonPerContext(type):
         return context[context_key]
 
 
-class AlreadyInitializedError(Exception):
+class ContextNotInitializedError(Exception):
     pass
