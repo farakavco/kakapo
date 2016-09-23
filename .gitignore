@@ -60,5 +60,6 @@ target/
 # PyCharm
 .idea/*
 
-
+# Sublime Text
+*.sublime*
 
