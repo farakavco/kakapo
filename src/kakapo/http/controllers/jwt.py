@@ -10,10 +10,6 @@ class JwtPrincipalController(BaseHandler):
     __principal_type__ = JwtBasePrincipal
     __jwt_header_key__ = 'HTTP_X_JWT_TOKEN'
 
-    @property
-    def context(self):
-        return Context.current()
-
     def get_principal(self):
         ctx = Context.current()
         # if hasattr(self, '_JwtPrincipalController__principal'):
