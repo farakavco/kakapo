@@ -34,8 +34,9 @@ class JwtPrincipalController(BaseHandler):
         return None
 
     def set_principal(self, principal):
+        ctx = Context.current()
         self.__principal = principal
-        self.context.update({
+        ctx.update({
             'principal': principal
         })
 

@@ -21,8 +21,16 @@ class Context(object):
 
     @staticmethod
     def destroy():
-        if hasattr(local, 'store'):
+        if not hasattr(local, 'store'):
+            return
+
+        try:
             del local.store[-1]
+        except IndexError:
+            pass
+
+        if not local.store:
+            delattr(local, 'store')
 
     def __getitem__(self, key):
         return local.store[-1][key]
@@ -39,15 +47,17 @@ class Context(object):
         return getattr(local.store[-1], name)
 
 
-class SingletonPerContext(type):
+application_context = {}
 
+
+class SingletonPerApplication(type):
     def __call__(cls, *args, **kwargs):
+        global application_context
         context_key = '%s' % cls.__name__
-        context = Context.current()
-        if context_key not in context.keys():
-            context[context_key] = \
-                super(SingletonPerContext, cls).__call__(*args, **kwargs)
-        return context[context_key]
+        if context_key not in application_context.keys():
+            application_context[context_key] = \
+                super(SingletonPerApplication, cls).__call__(*args, **kwargs)
+        return application_context[context_key]
 
 
 class ContextNotInitializedError(Exception):
