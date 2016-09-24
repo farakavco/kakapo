@@ -15,33 +15,34 @@ class JwtPrincipalController(BaseHandler):
         return Context.current()
 
     def get_principal(self):
-        if hasattr(self, '_JwtPrincipalController__principal'):
-            return self.__principal
+        ctx = Context.current()
+        # if hasattr(self, '_JwtPrincipalController__principal'):
+        #     return self.__principal
+
+        if 'principal' in ctx.keys():
+            return ctx['principal']
 
         if self.__jwt_header_key__ in self.request.environ:
             try:
                 token_base64 = self.request.environ[self.__jwt_header_key__]
-                self.__principal = self.__principal_type__.load(token_base64)
-                return self.__principal
+                ctx['principal'] = self.__principal_type__.load(token_base64)
+                return ctx['principal']
             except jwt.exceptions.DecodeError:
                 pass
 
         token = self.request.cookies.get('token')
         if token:
-            self.__principal = self.__principal_type__.load(token)
-            return self.__principal
+            ctx['principal'] = self.__principal_type__.load(token)
+            return ctx['principal']
 
         return None
 
     def set_principal(self, principal):
         ctx = Context.current()
-        self.__principal = principal
-        ctx.update({
-            'principal': principal
-        })
+        ctx['principal'] = principal
 
     def del_principal(self):
-        self.__principal = None
+        ctx['principal'] = None
 
     principal = property(get_principal, set_principal, del_principal)
 
