@@ -74,4 +74,4 @@ class JwtBasePrincipal(object):
     @staticmethod
     def delete_from_context():
         ctx = Context.current()
-        ctx.pop('principal')
+        del ctx['principal']
