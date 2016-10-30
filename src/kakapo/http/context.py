@@ -17,6 +17,8 @@ class Context(object):
 
     @classmethod
     def current(cls):
+        if not hasattr(local, 'store'):
+            return cls()
         return cls(proxy_only=True)
 
     @staticmethod

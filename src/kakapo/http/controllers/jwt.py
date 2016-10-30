@@ -38,6 +38,7 @@ class JwtPrincipalController(BaseHandler):
         ctx['principal'] = principal
 
     def del_principal(self):
+        ctx = Context.current()
         ctx['principal'] = None
 
     principal = property(get_principal, set_principal, del_principal)
