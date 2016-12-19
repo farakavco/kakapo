@@ -16,7 +16,9 @@ dependencies = [
     'wheezy.web',
     'argcomplete',
     'PyJWT',
-    'simplejson'
+    'python-jose',
+    'simplejson',
+    'python-rapidjson'
     # 'khayyam',
     # 'itsdangerous',
 ]
