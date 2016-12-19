@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import jwt
+from jose import jwt
 from kakapo.http.context import Context
 __author__ = 'vahid'
 
@@ -17,11 +17,11 @@ class JwtBasePrincipal(object):
         raise NotImplementedError
 
     def dump(self):
-        res = jwt.encode(
+        token = jwt.encode(
             self.items,
             self._secret(),
             algorithm=self._algorithm())
-        return res
+        return token
 
     @classmethod
     def load(cls, s):
@@ -29,9 +29,9 @@ class JwtBasePrincipal(object):
             s,
             cls._secret(),
             algorithms=cls._algorithm())
-        result = cls(**params)
-        result.validate()
-        return result
+        principal = cls(**params)
+        principal.validate()
+        return principal
 
     def __getattr__(self, key):
         items = object.__getattribute__(self, 'items')
@@ -48,14 +48,12 @@ class JwtBasePrincipal(object):
     @classmethod
     def current(cls):
         current = Context.current()
-        if current:
-            return current.get('principal')
-        return None
+        return current.get('principal')
 
     @classmethod
     def get_current_member_id(cls):
         c = cls.current()
-        if c:
+        if c is not None:
             return c.id
         raise ValueError('Invalid principal')
 
