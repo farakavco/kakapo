@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-#import json
-import rapidjson as json
+import simplejson as json
 
 
 def loads(o, *args, **kwargs):
