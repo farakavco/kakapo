@@ -50,13 +50,6 @@ class JwtBasePrincipal(object):
         current = Context.current()
         return current.get('principal')
 
-    @classmethod
-    def get_current_member_id(cls):
-        c = cls.current()
-        if c is not None:
-            return c.id
-        raise ValueError('Invalid principal')
-
     def validate(self):
         """
         It should be called just after the load method.
@@ -73,3 +66,16 @@ class JwtBasePrincipal(object):
     def delete_from_context():
         ctx = Context.current()
         del ctx['principal']
+
+    @classmethod
+    def from_user(cls, user):
+        raise NotImplementedError
+
+    @classmethod
+    def login(cls, user):
+        principal = cls.from_user(user)
+        principal.put_into_context()
+
+    @classmethod
+    def logout(cls):
+        cls.delete_from_context()
