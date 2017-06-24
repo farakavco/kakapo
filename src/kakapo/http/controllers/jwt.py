@@ -31,22 +31,19 @@ class JwtPrincipalController(BaseHandler):
                 return False
         return True
 
-    def load_principal(self):
-        principal = None
+    def load_principal(self, from_cookie=True):
         send_to_client = False
+
+        token = self.request.environ.get(self.__jwt_header_key__)
+        if not token and from_cookie:
+            token = self.request.cookies.get('token')
+
+        if token is None:
+            return None, send_to_client
 
         try:
             token_base64 = self.request.environ.get(self.__jwt_header_key__)
             if token_base64:
-                principal = self.__principal_type__.load(token_base64)
+                return self.__principal_type__.load(token_base64), send_to_client
         except Exception:
-            principal = None
-
-        try:
-            token = self.request.cookies.get('token')
-            if token:
-                principal = self.__principal_type__.load(token)
-        except Exception:
-            principal = None
-
-        return principal, send_to_client
+            return None, send_to_client
