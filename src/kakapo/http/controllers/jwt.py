@@ -42,8 +42,6 @@ class JwtPrincipalController(BaseHandler):
             return None, send_to_client
 
         try:
-            token_base64 = self.request.environ.get(self.__jwt_header_key__)
-            if token_base64:
-                return self.__principal_type__.load(token_base64), send_to_client
+            return self.__principal_type__.load(token), send_to_client
         except Exception:
             return None, send_to_client
