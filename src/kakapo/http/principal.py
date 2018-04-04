@@ -6,6 +6,7 @@ __author__ = 'vahid'
 
 class JwtBasePrincipal(object):
     def __init__(self, **kw):
+        object.__setattr__(self, '__token__', kw)
         object.__setattr__(self, 'items', kw)
 
     @classmethod
@@ -21,6 +22,7 @@ class JwtBasePrincipal(object):
             self.items,
             self._secret(),
             algorithm=self._algorithm())
+        object.__setattr__(self, '__token__', token)
         return token
 
     @classmethod
@@ -31,6 +33,7 @@ class JwtBasePrincipal(object):
             algorithms=cls._algorithm())
         principal = cls(**params)
         principal.validate()
+        object.__setattr__(principal, '__token__', s)
         return principal
 
     def __getattr__(self, key):
